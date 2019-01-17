@@ -1,0 +1,13 @@
+<div>
+    <div class = "sfh-results-labels">
+      <h2>Property Financials</h2>
+      <div class="input-group sfh-results-label" *ngFor="let metric of metricsArray">
+        <span class="financial-results-label">{{metric.label}}</span>
+        <span type="text" class="form-control financial-results-value">{{metric.value}}</span>
+      </div>
+    </div>
+  <div class = "sfh-results-labels" *ngFor="let chart of chartsArray">
+    <h2>{{chart.chartTitle}}</h2>
+    <app-d3-line-chart [chartId]=chart.chartId [options]=chart.chartOptions [inputData]=chart.chartData></app-d3-line-chart>
+  </div>
+</div>

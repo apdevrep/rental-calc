@@ -1,0 +1,43 @@
+.main-calc-type-btn{
+  padding: 3rem 1rem 3rem 1rem;
+}
+
+#button-group-container{
+  display: inline-block;
+}
+
+#welcome-message-text{
+  height: 10rem;
+  background-color: rgb(23, 162, 184);
+  margin-bottom: 1rem;
+}
+
+#welcome-menu{
+  text-align: center;
+}
+
+.welcome-page-button-text{
+  line-height: 1.2rem;
+}
+
+.btn-type-description{
+  padding-bottom: 2rem;
+  border-bottom: 2px darkgrey solid;
+}
+
+.welcome-btn-list{
+  font-size: 70%;
+}
+.welcome-btn-list-grouping {
+  text-align: left;
+  list-style-type: none;
+  width: 100%;
+}
+
+.main-calc-type-btn{
+  opacity: 0.8;
+  width: 20rem;
+}
+.main-calc-type-btn:hover{
+  opacity: 1;
+}

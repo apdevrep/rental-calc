@@ -1,0 +1,15 @@
+<div class = "form-inline">
+  <label class = "text-input-label form-inline" for="{{inputOptions.name}}">{{inputOptions.label}}</label>
+  <div class="input-textbox" [ngClass]="{'percent-textbox': inputOptions.type == 'percent'}">
+    <span *ngIf = "inputOptions.type == 'money'">$</span>
+    <input type="text"
+      [ngClass]='getInputClasses()'
+      id="{{inputOptions.name}}"
+      name="{{inputOptions.name}}"
+      [cleave]="{numeral: true}"
+       [ngModel]="sharedInput"
+       (ngModelChange)="change($event)"
+       ngRequired="inputOptions.required">
+    <span *ngIf = "inputOptions.type == 'percent'">%</span>
+  </div>
+</div>

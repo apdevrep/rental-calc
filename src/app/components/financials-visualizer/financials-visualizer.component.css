@@ -1,0 +1,31 @@
+.financial-results-label{
+  width: 22rem;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  text-align: right;
+  white-space: normal;
+}
+
+.financial-results-value{
+  height: 100%;
+  width: 22rem;
+  flex: none;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1;
+  text-align: left;
+  white-space: normal;
+}
+
+.sfh-results-labels{
+  text-align: center;
+}
+
+.sfh-results-label{
+  justify-content: center;
+}

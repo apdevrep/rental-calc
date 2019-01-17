@@ -1,0 +1,108 @@
+.sfhcalculator-container .text-input-label{
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  width: 10rem;
+  text-align: right;
+  justify-content: flex-end;
+}
+
+#sfh-title{
+  text-align: center;
+}
+
+.error-message{
+  color: red;
+}
+
+.sfh-input-box.ng-invalid.invalid-submit{
+  color: #495057;
+  background-color: #fff;
+  border-color: #80ffa7;
+  outline: 1px;
+  box-shadow: 0 0 0 0.1rem rgba(255, 0, 0, 0.75);
+}
+
+.sfh-input-box.ng-invalid.invalid-submit:focus{
+  color: #495057;
+  background-color: #fff;
+  border-color: #80ffa7;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem rgba(255, 0, 0, 0.25);
+}
+
+.sfh-input-box.ng-valid:focus{
+  color: #495057;
+  background-color: #fff;
+  border-color: #80ffa7;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 255, 6, 0.25);
+}
+
+.sfhcalculator-container h4{
+  color: rgb(70, 70, 70);
+  text-align: center;
+}
+
+.input-grid{
+  justify-content: center;
+}
+
+.input-grid .form-inline{
+  margin-bottom: 1px;
+}
+
+.sfhcalculator-container .sfh-input-box{
+  width: 10rem;
+  display: inline-block;
+}
+
+.sfhcalculator-container input.input-percent{
+  width: 4.5rem;
+}
+
+.btn-submit-sfh-rental{
+  text-align: right;
+  display: inline-block;
+  padding-bottom: 1rem;
+}
+
+.btn-secondary-sfh-rental{
+  text-align: right;
+  display: inline-block;
+  padding-bottom: 1rem;
+}
+
+.btn-secondary-sfh-rental button{
+  margin-right: .5rem;
+}
+
+.input-textbox span{
+  font-size: 1rem;
+}
+
+.input-textbox{
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+}
+
+.input-textbox.percent-textbox{
+  margin-right: 4.9rem;
+}
+
+.sfh-input-box{
+  padding-left: 0.4rem;
+  border: none;
+}
+.sfh-input-box:active{
+  border: none;
+}
+
+.input-options-checkbox{
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: center;
+  color: rgb(70, 70, 70);
+}

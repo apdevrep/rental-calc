@@ -1,0 +1,55 @@
+<div class = "container-fluid" id='welcome-menu'>
+  <div class="btn-group btn-group-lg" id='button-group-container' role="group" aria-label="Calculator Type">
+    <button type="button" class="btn btn-info main-calc-type-btn" [routerLink]="['sfh-calc']">
+      <h2 class="">Residential</h2>
+      <div class = "welcome-page-button-text">
+        <p class="btn-type-description">
+          Purchasing a property with 4 units or less?
+        </p>
+      </div>
+      <div class="welcome-btn-list">
+        <ul class="welcome-btn-list-grouping">
+          <li class="welcome-btn-list-item">5 Year Total Return</li>
+          <li class="welcome-btn-list-item">Capitalization Rate (Cap Rate)</li>
+          <li class="welcome-btn-list-item">Cash on Cash Return</li>
+          <li class="welcome-btn-list-item">Equity Growth</li>
+          <li class="welcome-btn-list-item">...and more</li>
+        </ul>
+      </div>
+    </button>
+    <button type="button" class="btn btn-secondary main-calc-type-btn" [routerLink]="['buy-rent-calc']">
+      <h2 class="">Rent vs Buy</h2>
+      <div class = "welcome-page-button-text">
+        <p class="btn-type-description">
+          Is it a better financial decision to rent or buy?
+        </p>
+      </div>
+      <div class="welcome-btn-list">
+        <ul class="welcome-btn-list-grouping">
+          <li class="welcome-btn-list-item">Break-even Timeline</li>
+          <li class="welcome-btn-list-item">Affordability</li>
+          <li class="welcome-btn-list-item">Upfront Costs</li>
+          <li class="welcome-btn-list-item">Equity Growth</li>
+          <li class="welcome-btn-list-item">...and more</li>
+        </ul>
+      </div>
+    </button>
+    <button type="button" class="btn btn-dark main-calc-type-btn" [routerLink]="['commercial-calc']">
+      <h2 class="">Commercial</h2>
+      <div class = "welcome-page-button-text">
+        <p class="btn-type-description">
+          All other non-residential real estate investment
+        </p>
+      </div>
+      <div class="welcome-btn-list">
+        <ul class="welcome-btn-list-grouping">
+          <li class="welcome-btn-list-item">Net Operating Income (NOI)</li>
+          <li class="welcome-btn-list-item">Capitalization Rate (Cap Rate)</li>
+          <li class="welcome-btn-list-item">Cash on Cash Return</li>
+          <li class="welcome-btn-list-item">Debt Coverage Ratio (DCR)</li>
+          <li class="welcome-btn-list-item">...and more</li>
+        </ul>
+      </div>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+export interface Property {
+  purchasePrice:number;
+  downPayment:number;
+  closingCosts:number;
+  rehabBudget:number;
+  monthlyGrossRent:number;
+  interestRate:number;
+  hoaFees?:number;
+  annualTaxes:number;
+  annualInsurance:number;
+  maintenanceRate:number;
+  vacancyRate?:number;
+  managementFees?:number;
+  afterRepairedValue:number;
+  otherMonthlyIncome:number;
+  inflation: number;
+  appreciation: number;
+  rentInflation: number;
+  sellingFees: number;
+  amortPeriod?: number;
+  initFixedPeriod?: number;
+  readjPeriod?: number;
+  initIntJump?: number;
+  otherIntJumps?: number;
+  maxIntRate?: number;
+  reLeasingCost?: number;
+  reLeasingFreq?: number;
+  getAnnualPropertyExpenses();
+  getAnnualPropertyIncome();
+  getTotalCashInvested();
+}
