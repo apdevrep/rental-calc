@@ -2,6 +2,15 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.1.
 
+## Working with Wordpress
+After building (with production tag) the project:
+1. All js and css files go into desired child theme directory, in folder named: 'jsEvaluator' and the re-evaluator-template.php file in parent directory
+2. Remember to change the hash references on the main, inline, and styles files.
+3. In the new page on Wordpress, enqueue the indicated template file
+4. May need to adjust routing parameters to catch any added wordpress URL parameters/folders
+5. Need to add handling to .htaccess to allow reloading (via redirect of folder structure in url)
+6. Add any necessary css to handle merge with main theme styles.css
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

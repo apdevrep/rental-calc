@@ -10,6 +10,9 @@ const routes: Routes = [
   {path: 'sfh-calc', component: SFHCalculatorComponent},
   {path: 'buy-rent-calc', component: BuyRentCalculatorComponent},
   {path: 'commercial-calc', component: CommercialCalculatorComponent},
+  {path: "real-estate-evaluator/sfh-calc", redirectTo:"sfh-calc",pathMatch:"prefix"},
+  {path: "real-estate-evaluator/buy-rent-calc", redirectTo:"buy-rent-calc",pathMatch:"prefix"},
+  {path: "real-estate-evaluator/commercial-calc", redirectTo:"commercial-calc",pathMatch:"prefix"},
   {path: "**", component: WelcomeComponent}
 ]
 
