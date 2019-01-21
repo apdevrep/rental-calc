@@ -12,5 +12,5 @@
 <app-root></app-root>
 <script type="text/javascript" src="runtime.ec2944dd8b20ec099bf3.js"></script>
 <script type="text/javascript" src="polyfills.e6fbd82b34ccb0c8609f.js"></script>
-<script type="text/javascript" src="main.6b161784a950357c5618.js"></script>
+<script type="text/javascript" src="main.69f2b33f2c030d777397.js"></script>
 <?php get_footer(); ?>
