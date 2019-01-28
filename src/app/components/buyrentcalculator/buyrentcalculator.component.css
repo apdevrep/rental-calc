@@ -1,43 +1,9 @@
-.buyrentcalculator-container .text-input-label{
-  padding: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 5px;
-  width: 10rem;
-  text-align: right;
-  justify-content: flex-end;
-}
-
 #buyrent-title{
   text-align: center;
 }
 
 .error-message{
   color: red;
-}
-
-.buyrent-input-box.ng-invalid.invalid-submit{
-  color: #495057;
-  background-color: #fff;
-  border-color: #80ffa7;
-  outline: 1px;
-  box-shadow: 0 0 0 0.1rem rgba(255, 0, 0, 0.75);
-}
-
-.buyrent-input-box.ng-invalid.invalid-submit:focus{
-  color: #495057;
-  background-color: #fff;
-  border-color: #80ffa7;
-  outline: 0;
-  box-shadow: 0 0 0 0.1rem rgba(255, 0, 0, 0.25);
-}
-
-.buyrent-input-box.ng-valid:focus{
-  color: #495057;
-  background-color: #fff;
-  border-color: #80ffa7;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 255, 6, 0.25);
 }
 
 .buyrentcalculator-container h4{
@@ -51,15 +17,6 @@
 
 .input-grid .form-inline{
   margin-bottom: 1px;
-}
-
-.buyrentcalculator-container .buyrent-input-box{
-  width: 10rem;
-  display: inline-block;
-}
-
-.buyrentcalculator-container input.input-percent{
-  width: 4.5rem;
 }
 
 .btn-submit-buyrent-rental{
@@ -76,28 +33,6 @@
 
 .btn-secondary-buyrent-rental button{
   margin-right: .5rem;
-}
-
-.input-textbox span{
-  font-size: 1rem;
-}
-
-.input-textbox{
-  background-color: white;
-  border-radius: 5px;
-  border: 1px solid lightgrey;
-}
-
-.input-textbox.percent-textbox{
-  margin-right: 4.9rem;
-}
-
-.buyrent-input-box{
-  padding-left: 0.4rem;
-  border: none;
-}
-.buyrent-input-box:active{
-  border: none;
 }
 
 .input-options-checkbox{

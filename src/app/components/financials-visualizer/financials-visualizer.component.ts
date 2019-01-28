@@ -3,6 +3,7 @@ import {Property} from '../../shared/interfaces/property';
 import {PropertyFinancialsService} from '../../shared/services/propertyfinancials.service';
 import {D3LineChartComponent} from '../d3-line-chart/d3-line-chart.component';
 
+//container that holds investments metrics and d3 charts
 @Component({
   selector: 'app-financials-visualizer',
   templateUrl: './financials-visualizer.component.html',
@@ -35,6 +36,7 @@ export class FinancialsVisualizerComponent implements OnInit {
     this.initChartMetricsArray();
   }
 
+  //setup d3 chart options
   initChartArray(){
     this.chartsArray = [];
     let chartOptions: any, chartData: any;
@@ -57,6 +59,7 @@ export class FinancialsVisualizerComponent implements OnInit {
     }
   }
 
+  //get typical investment metrics
   initMetrics(){
     this.investedCapital = Math.round(this.property.getTotalCashInvested());
     this.netOperatingIncome = Math.round(this.propertyFinancialsService.getFirstYearNetOperatingIncome(this.property));
@@ -69,6 +72,7 @@ export class FinancialsVisualizerComponent implements OnInit {
     this.year5Equity = Math.round(year5Returns.equityGain);
   }
 
+  //initialize built in metrics
   initChartMetricsArray(){
     let metrics = {
         cashflow: {label: 'Cashflow',
@@ -102,6 +106,7 @@ export class FinancialsVisualizerComponent implements OnInit {
             this.propertyFinancialsService.numberWithCommas(this.property.getTotalCashInvested())}
           };
 
+    //metrics array is array of d3 charts that will be shown, so determine which are requested and which custom ones are provided
     this.metricsArray = [];
     let metricsKey;
     for(let i = 0; i < this.vizOptions.outputMetrics.length; i++){

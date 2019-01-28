@@ -1,21 +1,21 @@
-import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 
-//To be used in the future after conversion to Reactive Form
+//Input of either a number or a percent
 @Component({
   selector: 'app-calc-input',
   templateUrl: './calc-input.component.html',
   styleUrls: ['./calc-input.component.css']
 })
 export class CalcInputComponent implements OnInit {
-  @Input() sharedInput: string;
-  @Input() invalid: boolean;
+  @Input() parentForm: FormGroup;
+  @Input() inputName: string;
+  @Input() inputLabel: string;
+  @Input() invalidSubmit?: boolean;
+  @Input() defaultText?: string;
   @Input() inputOptions: {
-    label: string,
     type: string,
-    name: string,
-    required: boolean,
     classes: Array<string> };
-  @Output() sharedInputChange = new EventEmitter();
 
   constructor() {
   }
@@ -23,17 +23,13 @@ export class CalcInputComponent implements OnInit {
   ngOnInit() {
   }
 
+  //if invalid submit was triggered in parent, style this component
   getInputClasses(){
-    if(this.invalid){
-      return this.inputOptions.classes.concat['invalid-submit'];
+    if(this.invalidSubmit){
+      return this.inputOptions.classes.concat(['invalid-submit']);
     }else {
       return this.inputOptions.classes;
     }
-  }
-
-  change(newValue) {
-    this.sharedInput = newValue;
-    this.sharedInputChange.emit(newValue);
   }
 
 }

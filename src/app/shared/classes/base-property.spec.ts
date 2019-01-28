@@ -1,11 +1,11 @@
-import { SingleFamilyHouseRental } from './single-family-house-rental';
+import { BaseProperty } from './base-property';
 
-describe('SingleFamilyHouseRental', () => {
-  const test71ARMSFH: SingleFamilyHouseRental = new SingleFamilyHouseRental(100000,0.20,5000,10000,1000,0.05,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,25,7,1,.02,.005,.04,1000,2);
-  const test10DownSFH: SingleFamilyHouseRental = new SingleFamilyHouseRental(100000,.1,0,0,1000,.05,0,0,0);
-  const test0DownSFH: SingleFamilyHouseRental = new SingleFamilyHouseRental(100000,0,0,0,1000,.05,0,0,0);
-  const test0IncomeSFH: SingleFamilyHouseRental = new SingleFamilyHouseRental(100000,.2,0,0,0,.05,0,0,0);
-  const testUndefinedHoaSFH: SingleFamilyHouseRental = new SingleFamilyHouseRental(100000,.2,0,0,0,.05,undefined,0,0);
+describe('BaseProperty', () => {
+  const test71ARMSFH: BaseProperty = new BaseProperty(100000,0.20,5000,10000,1000,0.05,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,25,7,1,.02,.005,.04,1000,2);
+  const test10DownSFH: BaseProperty = new BaseProperty(100000,.1,0,0,1000,.05,0,0,0);
+  const test0DownSFH: BaseProperty = new BaseProperty(100000,0,0,0,1000,.05,0,0,0);
+  const test0IncomeSFH: BaseProperty = new BaseProperty(100000,.2,0,0,0,.05,0,0,0);
+  const testUndefinedHoaSFH: BaseProperty = new BaseProperty(100000,.2,0,0,0,.05,undefined,0,0);
 
   it('#getAnnualPropertyExpenses still return a number if hoa is not defined', () => {
     expect(testUndefinedHoaSFH.getAnnualPropertyExpenses()).toEqual(1000);

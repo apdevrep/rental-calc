@@ -1,15 +1,15 @@
-<div class = "form-inline">
-  <label class = "text-input-label form-inline" for="{{inputOptions.name}}">{{inputOptions.label}}</label>
+<div class = "form-inline" [formGroup]='parentForm'>
+  <label class = "text-input-label form-inline" for='{{inputName}}' >{{inputLabel}}</label>
   <div class="input-textbox" [ngClass]="{'percent-textbox': inputOptions.type == 'percent'}">
-    <span *ngIf = "inputOptions.type == 'money'">$</span>
+    <span [hidden] = "inputOptions.type != 'currency'">$</span>
     <input type="text"
+      class = 'calc-input-box'
       [ngClass]='getInputClasses()'
-      id="{{inputOptions.name}}"
-      name="{{inputOptions.name}}"
+      id='{{inputName}}'
+      name='{{inputName}}'
       [cleave]="{numeral: true}"
-       [ngModel]="sharedInput"
-       (ngModelChange)="change($event)"
-       ngRequired="inputOptions.required">
-    <span *ngIf = "inputOptions.type == 'percent'">%</span>
+      placeholder = '{{defaultText}}'
+      [formControlName]='inputName'>
+    <span [hidden] = "inputOptions.type != 'percent'">%</span>
   </div>
 </div>

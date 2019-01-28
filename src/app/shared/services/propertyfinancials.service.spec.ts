@@ -1,20 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 
 import { PropertyFinancialsService } from './propertyfinancials.service';
-import { SingleFamilyHouseRental } from '../classes/single-family-house-rental';
+import { BaseProperty } from '../classes/base-property';
 import { Property } from '../interfaces/property';
 
 describe('PropertyFinancialsService', () => {
-  const testTypicalSFH: Property = new SingleFamilyHouseRental(100000,0.20,5000,10000,1000,0.05,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,30,0,0,0,0,0,0,2);
-  const testSFH0Interest: Property = new SingleFamilyHouseRental(100000,0.20,5000,10000,1000,0,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,30,0,0,0,0,0,0,2);
-  const test71ARMCommercial: Property = new SingleFamilyHouseRental(100000,0.20,5000,10000,1000,0.05,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,25,7,1,.02,.005,.04,0,2);
-  const testEmptySFH: Property = new SingleFamilyHouseRental(0,0,0,0,0,0,0,0,0);
-  const test0PriceSFH: Property = new SingleFamilyHouseRental(0,.2,0,0,1000,.01,0,0,0);
-  const test10DownSFH: Property = new SingleFamilyHouseRental(100000,.1,0,0,1000,.05,0,0,0);
-  const test10Down0IntSFH: Property = new SingleFamilyHouseRental(100000,.1,0,0,1000,0,0,0,0);
-  const test100DownSFH: Property = new SingleFamilyHouseRental(0,1,0,0,1000,.01,0,0,0);
-  const testFixerUpperSFH: Property = new SingleFamilyHouseRental(100000,.2,5000,10000,1000,.05,100,1000,1000,.01,.1,.1,150000);
-  const testZeroRentSFH: Property = new SingleFamilyHouseRental(100000,.2,5000,10000,0,.05,100,1000,1000,.01,.1,.1,100000);
+  const testTypicalSFH: Property = new BaseProperty(100000,0.20,5000,10000,1000,0.05,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,30,0,0,0,0,0,0,2);
+  const testSFH0Interest: Property = new BaseProperty(100000,0.20,5000,10000,1000,0,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,30,0,0,0,0,0,0,2);
+  const test71ARMCommercial: Property = new BaseProperty(100000,0.20,5000,10000,1000,0.05,100,1000,1000,.01,.10,.10,120000,0,.03,.03,.03,.06,25,7,1,.02,.005,.04,0,2);
+  const testEmptySFH: Property = new BaseProperty(0,0,0,0,0,0,0,0,0);
+  const test0PriceSFH: Property = new BaseProperty(0,.2,0,0,1000,.01,0,0,0);
+  const test10DownSFH: Property = new BaseProperty(100000,.1,0,0,1000,.05,0,0,0);
+  const test10Down0IntSFH: Property = new BaseProperty(100000,.1,0,0,1000,0,0,0,0);
+  const test100DownSFH: Property = new BaseProperty(0,1,0,0,1000,.01,0,0,0);
+  const testFixerUpperSFH: Property = new BaseProperty(100000,.2,5000,10000,1000,.05,100,1000,1000,.01,.1,.1,150000);
+  const testZeroRentSFH: Property = new BaseProperty(100000,.2,5000,10000,0,.05,100,1000,1000,.01,.1,.1,100000);
   let service: PropertyFinancialsService;
 
   beforeEach(() => {

@@ -1,263 +1,106 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { CommercialProperty } from '../../shared/classes/commercial-property';
 import { FinancialsVisualizerComponent } from '../financials-visualizer/financials-visualizer.component';
-import {PropertyCacheService} from '../../shared/services/property-cache.service';
+import { PropertyCacheService } from '../../shared/services/property-cache.service';
 import { Property } from '../../shared/interfaces/property';
-import {NgForm} from '@angular/forms';
-import {PropertyFinancialsService} from '../../shared/services/propertyfinancials.service';
+import { Calculator } from '../../shared/interfaces/calculator';
+import { PropertyFinancialsService } from '../../shared/services/propertyfinancials.service';
+import { FormFactoryService } from '../../shared/services/form-factory.service';
+import { CalcInputComponent } from '../calc-input/calc-input.component';
+import { BaseCalculator } from '../../shared/classes/base-calculator';
 
-//TODO convert to Reactive Form and
-//TODO use calc-input component
-//TODO use pipes to format view, only use numbers everywhere else
+//This component displays the inputs, calculator results, and charts for the commercial Evaluator
 @Component({
   selector: 'app-commercialcalculator',
   templateUrl: './commercialcalculator.component.html',
   styleUrls: ['./commercialcalculator.component.css']
 })
-export class CommercialCalculatorComponent implements OnInit {
-  @ViewChild('form') form;
-  purchasePrice: string;
-  downPayment: number;
-  closingCosts: string;
-  rehabBudget: string;
-  monthlyGrossRent: string;
-  otherMonthlyIncome: string;
-  interestRate: number;
-  annualTaxes: string;
-  annualInsurance: string;
-  maintenanceRate: number;
-  vacancyRate: number;
-  managementFees: number;
-  afterRepairedValue: string;
-  inflation: number;
-  appreciation: number;
-  rentInflation: number;
-  sellingFees: number;
-  reLeasingCost: string;
-  reLeasingFreq: string;
-  amortPeriod: string;
-  initFixedPeriod: string;
-  readjPeriod: string;
-  initIntJump: number;
-  otherIntJumps: number;
-  maxIntRate: number;
-
-  targetCapRate: number;
-
-  rentalProperty: CommercialProperty;
-  propertyCacheService: PropertyCacheService;
-  propertyFinancialsService: PropertyFinancialsService;
-
-  optionsChecked: boolean;
-  inputsCollapsed: boolean;
-  invalidSubmit: boolean;
-  errorMessage: string;
-
-  placeHolderARV: string;
-  placeHolderClosingCosts: string;
-
-  financialVisualizerOptions: any;
-
-  constructor(propertyCacheService: PropertyCacheService,propertyFinancialsService: PropertyFinancialsService) {
-    this.propertyCacheService = propertyCacheService;
-    this.propertyFinancialsService = propertyFinancialsService;
+export class CommercialCalculatorComponent extends BaseCalculator implements Calculator {
+  //pass services to parent constructor
+  constructor(public fb: FormBuilder,
+    public propertyCacheService: PropertyCacheService,
+    public propertyFinancialsService: PropertyFinancialsService,
+    public formFactoryService: FormFactoryService,
+    public cdr: ChangeDetectorRef) {
+      super(fb,propertyCacheService,propertyFinancialsService,formFactoryService,cdr);
   }
 
+  //set type of new property and call functions to set up and initialize forms
   ngOnInit() {
-    this.initForm();
+    this.property = new CommercialProperty();
+    this.setupForm(this.formFactoryService.getFormControls('commercial'));
+    this.resetFormOptions();
+    this.resetFormControlValues();
+    super.addPercentFormControlName(new Set(['vacancyRate','managementFees','initIntJump','otherIntJumps','maxIntRate','targetCapRate']));
   }
 
-  initForm(){
-    this.inputsCollapsed = false;
-    this.optionsChecked = false;
-    this.rehabBudget = "0";
-    this.otherMonthlyIncome = "0";
-    this.maintenanceRate = 1;
-    this.vacancyRate = 10;
-    this.managementFees = 10;
-    this.inflation = 3;
-    this.appreciation = 3;
-    this.rentInflation = 3;
-    this.sellingFees = 7;
-    this.invalidSubmit = false;
-    this.amortPeriod = '25';
-    this.initFixedPeriod = '7';
-    this.readjPeriod = '1';
-    this.initIntJump = 2;
-    this.otherIntJumps = 0.5;
-    this.maxIntRate = 4;
-    this.reLeasingCost = '0';
-    this.reLeasingFreq = '2';
-    this.targetCapRate = 8;
-    this.afterRepairedValue = undefined;
-    this.closingCosts = undefined;
+  //reset form control values to default
+  resetFormControlValues(){
+    this.parentForm.controls['rehabBudget'].setValue("0");
+    this.parentForm.controls['maintenanceRate'].setValue("1");
+    this.parentForm.controls['inflation'].setValue("3");
+    this.parentForm.controls['appreciation'].setValue("3");
+    this.parentForm.controls['sellingFees'].setValue("6");
+    this.parentForm.controls['rentInflation'].setValue("3");
+    this.parentForm.controls['vacancyRate'].setValue("10");
+    this.parentForm.controls['managementFees'].setValue("10");
+    this.parentForm.controls['amortPeriod'].setValue("25");
+    this.parentForm.controls['initFixedPeriod'].setValue("7");
+    this.parentForm.controls['readjPeriod'].setValue("1");
+    this.parentForm.controls['initIntJump'].setValue("2");
+    this.parentForm.controls['otherIntJumps'].setValue("0.5");
+    this.parentForm.controls['maxIntRate'].setValue("4");
+    this.parentForm.controls['reLeasingCost'].setValue("0");
+    this.parentForm.controls['reLeasingFreq'].setValue("2");
+    this.parentForm.controls['targetCapRate'].setValue("8");
+    this.parentForm.controls['targetCapRate'].setValue("8");
+    this.cdr.detectChanges();
   }
 
-  initFormFromProperty(property: Property, customObject: any){
-    if(property != undefined){
-      this.purchasePrice = property.purchasePrice.toString();
-      this.downPayment =  Math.round(property.downPayment*1000)/10;
-      this.monthlyGrossRent = property.monthlyGrossRent.toString();
-      this.interestRate = Math.round(property.interestRate*1000)/10;
-      this.annualTaxes = property.annualTaxes.toString();
-      this.annualInsurance = property.annualInsurance.toString();
-      this.afterRepairedValue = property.afterRepairedValue.toString();
-      this.closingCosts = property.closingCosts.toString();
-      this.rehabBudget = property.rehabBudget.toString();
-      this.otherMonthlyIncome = property.otherMonthlyIncome.toString();
-      this.maintenanceRate = Math.round(property.maintenanceRate*1000)/10;
-      this.vacancyRate = Math.round(property.vacancyRate*1000)/10;
-      this.managementFees = Math.round(property.managementFees*1000)/10;
-      this.inflation = Math.round(property.inflation*1000)/10;
-      this.appreciation = Math.round(property.appreciation*1000)/10;
-      this.rentInflation = Math.round(property.rentInflation*1000)/10;
-      this.sellingFees = Math.round(property.sellingFees*1000)/10;
-      this.reLeasingCost = property.reLeasingCost.toString();
-      this.amortPeriod = property.amortPeriod.toString();
-      this.initFixedPeriod = property.initFixedPeriod.toString();
-      this.readjPeriod = property.readjPeriod.toString();
-      this.initIntJump = Math.round(property.initIntJump*1000)/10;
-      this.otherIntJumps = Math.round(property.otherIntJumps*1000)/10;
-      this.maxIntRate = Math.round(property.maxIntRate*1000)/10;
-      this.reLeasingFreq = property.reLeasingFreq.toString();
-
-      this.targetCapRate = customObject.targetCapRate;
-
-      this.inputsCollapsed = false;
-      this.optionsChecked = false;
-      this.invalidSubmit = false;
-    }
+  //load in any other inputs from previous save (excluding the property)
+  loadOtherInputs(otherInputs: any){
+    this.parentForm.controls['targetCapRate'].setValue(otherInputs.targetCapRate);
   }
 
-  createCustomObjectForSaving(){
-    let customObject: any = {targetCapRate: this.targetCapRate};
-    return customObject;
-  }
-
+  //load in previously saved property
   getPreviousSubmittedProperty(){
     let prevSavedProperty = this.propertyCacheService.getCurrentProperty('commercial');
     if(prevSavedProperty != undefined){
-      this.rentalProperty  = prevSavedProperty.property;
-      this.initFormFromProperty(this.rentalProperty, prevSavedProperty.customObject);
+      this.property  = prevSavedProperty.property;
+      this.initFormFromProperty(this.property, prevSavedProperty.customObject);
       this.optionsChecked = true;
     }
   }
 
-  clearForm(){
-    this.purchasePrice = undefined;
-    this.downPayment = undefined;
-    this.monthlyGrossRent = undefined;
-    this.interestRate = undefined;
-    this.annualTaxes = undefined;
-    this.annualInsurance = undefined;
-    this.initForm();
-  }
-
-  getClosingCosts(){
-    if(this.purchasePrice != undefined){
-      let tempClosingCosts = Number(this.purchasePrice.replace(/,/g,''))*0.03;
-      if( tempClosingCosts > 5000){
-        this.placeHolderClosingCosts = tempClosingCosts.toString();
-        return tempClosingCosts.toString();
-      } else{
-        this.placeHolderClosingCosts = "5000";
-        return "5,000";
-      }
-    } else{
-      return ;
-    }
-  }
-
-  getAfterRepairedValue(){
-    this.placeHolderARV = this.purchasePrice;
-    return this.purchasePrice;
-  }
-
+  //initialize visualizer options
   initVizOptions(){
-    let netOpIncome = this.propertyFinancialsService.getFirstYearNetOperatingIncome(this.rentalProperty);
-    let annualDebtService = 12*this.propertyFinancialsService.getLoanPayment(this.rentalProperty);
+    //get investment metrics
+    let netOpIncome = this.propertyFinancialsService.getFirstYearNetOperatingIncome(this.property);
+    let annualDebtService = 12*this.propertyFinancialsService.getLoanPayment(this.property);
+    let targetCapRate = Number(this.parentForm.controls['targetCapRate'].value.replace(/,/g,''))
+
     this.financialVisualizerOptions = {
-      outputMetrics: ['cashflow', 'cashOnCashReturn','capRate','dcr','capRateWorth','ARR5','Equity5'],
-      customMetrics: {
+      outputMetrics: ['cashflow', 'cashOnCashReturn','capRate','dcr','capRateWorth','ARR5','Equity5'], //setup built in metrics
+      customMetrics: { // include debt coverage ratio and cap rate worth metrics
         dcr: {label: 'Debt Coverage Ratio (DCR)',
           value: Math.round(100*netOpIncome/annualDebtService)/100},
-        capRateWorth: {label: 'Property Worth at '+this.targetCapRate+'% CAP Rate',
-          value: '$'+this.propertyFinancialsService.numberWithCommas(100*netOpIncome/this.targetCapRate)}
-      },
+        capRateWorth: {label: 'Property Worth at '+targetCapRate+'% CAP Rate',
+          value: '$'+this.propertyFinancialsService.numberWithCommas(Math.round(100*netOpIncome/targetCapRate))}
+      }, //include equity chart
       charts: [{chartXY: {xTitle: 'Months', xDataColumnHeader: 'month', yTitle:'Equity, $', yDataColumnHeader: 'equity'},
-        chartData: this.propertyFinancialsService.getEquitySchedule(this.rentalProperty),
+        chartData: this.propertyFinancialsService.getEquitySchedule(this.property),
         chartSize: {width: 600, height: 300, xMin: 0, xMax: undefined, yMin: 0, yMax: undefined},
         chartTitle: 'Equity Growth Over Time'}]
     };
   }
 
-  customValidation(){
-    let validationPassed = true;
-    if(!this.downPaymentValid()){
-      validationPassed = false;
-      this.errorMessage = "Downpayment must be between 0 and 100%";
-    }
-    return validationPassed;
-  }
-
-  downPaymentValid(){
-    if(this.downPayment > 100 || this.downPayment < 0 || this.downPayment == undefined){
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  onSubmit(){
-    if(this.customValidation() && this.form.valid){
-      if(!this.inputsCollapsed){
-        if(this.downPayment == 100){
-          this.interestRate = 0;
-        }
-        let actualARV = this.afterRepairedValue;
-        if(actualARV == undefined || actualARV == ""){
-          actualARV = this.placeHolderARV;
-        }
-        let actualClosingCosts = this.closingCosts
-        if(actualClosingCosts == undefined || actualClosingCosts == ""){
-          actualClosingCosts = this.placeHolderClosingCosts.toString();
-        }
-        this.rentalProperty = new CommercialProperty(
-          Number(this.purchasePrice.replace(/,/g,'')),
-          this.downPayment/100,
-          Number(actualClosingCosts.replace(/,/g,'')),
-          Number(this.rehabBudget.replace(/,/g,'')),
-          Number(this.monthlyGrossRent.replace(/,/g,'')),
-          this.interestRate/100,
-          undefined, //hoa fees
-          Number(this.annualTaxes.replace(/,/g,'')),
-          Number(this.annualInsurance.replace(/,/g,'')),
-          this.maintenanceRate/100,
-          this.vacancyRate/100,
-          this.managementFees/100,
-          Number(actualARV.replace(/,/g,'')),
-          Number(this.otherMonthlyIncome.replace(/,/g,'')),
-          this.inflation/100,
-          this.appreciation/100,
-          this.rentInflation/100,
-          this.sellingFees/100,
-          Number(this.amortPeriod.replace(/,/g,'')),
-          Number(this.initFixedPeriod.replace(/,/g,'')),
-          Number(this.readjPeriod.replace(/,/g,'')),
-          this.initIntJump/100,
-          this.otherIntJumps/100,
-          this.maxIntRate/100,
-          Number(this.reLeasingCost.replace(/,/g,'')),
-          Number(this.reLeasingFreq.replace(/,/g,''))
-        );
-        this.initVizOptions();
-        this.propertyCacheService.addCurrentProperty(this.rentalProperty,'commercial', this.createCustomObjectForSaving());
-      }
-      this.inputsCollapsed = !this.inputsCollapsed;
-      this.invalidSubmit = false;
-    } else {
-      this.invalidSubmit = true;
-    }
+  //save this file submission
+  saveSubmission(){
+    let customObjectToSave = {
+      targetCapRate: Number(this.parentForm.controls['targetCapRate'].value.replace(/,/g,''))
+    };
+    this.propertyCacheService.addCurrentProperty(this.property,'commercial',customObjectToSave);
   }
 
 }

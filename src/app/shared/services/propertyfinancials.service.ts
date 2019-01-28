@@ -12,13 +12,6 @@ export class PropertyFinancialsService {
   this.loanCalculatorService = loanCalculatorService;
   }
 
-  /**
-   * Description.
-   *
-   * @param {type} name Description.
-   *
-   * @return {type} Description
-   */
   getPITI(property: Property){
     return Math.round((this.loanCalculatorService.getLoanPaymentWithPMI(property) + property.annualTaxes/12 + property.annualInsurance/12 + property.hoaFees/12)*100)/100;
   }

@@ -1,154 +1,76 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
-import { SingleFamilyHouseRental } from '../../shared/classes/single-family-house-rental';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { BaseProperty } from '../../shared/classes/base-property';
 import { FinancialsVisualizerComponent } from '../financials-visualizer/financials-visualizer.component';
 import { PropertyCacheService } from '../../shared/services/property-cache.service';
 import { Property } from '../../shared/interfaces/property';
-import { NgForm } from '@angular/forms';
-import {PropertyFinancialsService} from '../../shared/services/propertyfinancials.service';
+import { Calculator } from '../../shared/interfaces/calculator';
+import { PropertyFinancialsService } from '../../shared/services/propertyfinancials.service';
+import { FormFactoryService } from '../../shared/services/form-factory.service';
 import { CalcInputComponent } from '../calc-input/calc-input.component';
+import { BaseCalculator } from '../../shared/classes/base-calculator';
 
-//TODO convert to Reactive Form and
-//TODO use calc-input component
-//TODO use pipes to format view, only use numbers everywhere else
+//This component displays the inputs, calculator results, and charts for the Buy Vs Rent Evaluator
 @Component({
   selector: 'app-buyrentcalculator',
   templateUrl: './buyrentcalculator.component.html',
   styleUrls: ['./buyrentcalculator.component.css']
 })
-export class BuyRentCalculatorComponent implements OnInit {
-  @ViewChild('form') form;
-  inputTest: string;
-  purchasePrice: string;
-  downPayment: number;
-  closingCosts: string;
-  rehabBudget: string;
-  monthlyGrossRent: string;
-  otherMonthlyIncome: string;
-  interestRate: number;
-  hoaFees: string;
-  annualTaxes: string;
-  annualInsurance: string;
-  maintenanceRate: number;
-  afterRepairedValue: string;
-  inflation: number;
-  appreciation: number;
-  rentInflation: number;
-  sellingFees: number;
-  otherDebt: string;
-  opportunityCost: number;
-
-  rentalProperty: SingleFamilyHouseRental;
-  propertyCacheService: PropertyCacheService;
-  propertyFinancialsService: PropertyFinancialsService
-
-  optionsChecked: boolean;
-  inputsCollapsed: boolean;
-  invalidSubmit: boolean;
-  errorMessage: string;
-
-  placeHolderARV: string;
-  placeHolderClosingCosts: string;
-
-  financialVisualizerOptions: any;
-
-  constructor(propertyCacheService: PropertyCacheService, propertyFinancialsService: PropertyFinancialsService) {
-    this.propertyCacheService = propertyCacheService;
-    this.propertyFinancialsService = propertyFinancialsService;
+export class BuyRentCalculatorComponent extends BaseCalculator implements Calculator {
+  //pass services to parent constructor
+  constructor(public fb: FormBuilder,
+    public propertyCacheService: PropertyCacheService,
+    public propertyFinancialsService: PropertyFinancialsService,
+    public formFactoryService: FormFactoryService,
+    public cdr: ChangeDetectorRef) {
+      super(fb,propertyCacheService,propertyFinancialsService,formFactoryService,cdr);
   }
 
+  //set type of new property and call functions to set up and initialize forms
   ngOnInit() {
-    this.initForm();
+    this.property = new BaseProperty();
+    this.setupForm(this.formFactoryService.getFormControls('buyVsRent'));
+    this.resetFormOptions();
+    this.resetFormControlValues();
+    super.addPercentFormControlName(new Set(['opportunityCost']));
   }
 
-  initForm(){
-    this.inputsCollapsed = false;
-    this.optionsChecked = false;
-    this.rehabBudget = "0";
-    this.otherMonthlyIncome = "0";
-    this.maintenanceRate = 1;
-    this.inflation = 3;
-    this.appreciation = 3;
-    this.rentInflation = 3;
-    this.sellingFees = 7;
-    this.opportunityCost = 4;
-    this.invalidSubmit = false;
-    this.afterRepairedValue = undefined;
-    this.closingCosts = undefined;
+  //reset form control values to default
+  resetFormControlValues(){
+    this.parentForm.controls['rehabBudget'].setValue("0");
+    this.parentForm.controls['maintenanceRate'].setValue("1");
+    this.parentForm.controls['inflation'].setValue("3");
+    this.parentForm.controls['appreciation'].setValue("3");
+    this.parentForm.controls['sellingFees'].setValue("6");
+    this.parentForm.controls['rentInflation'].setValue("3");
+    this.parentForm.controls['opportunityCost'].setValue("4");
+    this.cdr.detectChanges();
   }
 
-  initFormFromProperty(property: Property, otherInputs: any){
-    if(property != undefined){
-      this.purchasePrice = property.purchasePrice.toString();
-      this.downPayment = Math.round(property.downPayment*1000)/10;
-      this.monthlyGrossRent = property.monthlyGrossRent.toString();
-      this.interestRate = Math.round(property.interestRate*1000)/10;
-      this.hoaFees = property.hoaFees.toString();
-      this.annualTaxes = property.annualTaxes.toString();
-      this.annualInsurance = property.annualInsurance.toString();
-      this.afterRepairedValue = property.afterRepairedValue.toString();
-      this.closingCosts = property.closingCosts.toString();
-      this.rehabBudget = property.rehabBudget.toString();
-      this.otherMonthlyIncome = property.otherMonthlyIncome.toString();
-      this.maintenanceRate = Math.round(property.maintenanceRate*1000)/10;
-      this.inflation = Math.round(property.inflation*1000)/10;
-      this.appreciation = Math.round(property.appreciation*1000)/10;
-      this.rentInflation = Math.round(property.rentInflation*1000)/10;
-      this.sellingFees = Math.round(property.sellingFees*1000)/10;
-
-      if(otherInputs != undefined){
-        this.otherDebt = otherInputs.otherDebt.toString();
-        this.opportunityCost =  Math.round(otherInputs.opportunityCost*1000)/10;
-      }
-
-      this.inputsCollapsed = false;
-      this.optionsChecked = false;
-      this.invalidSubmit = false;
-    }
+  //load in any other inputs from previous save (excluding the property)
+  loadOtherInputs(otherInputs: any){
+    this.parentForm.controls['opportunityCost'].setValue(otherInputs.opportunityCost);
+    this.parentForm.controls['otherDebt'].setValue(otherInputs.otherDebt);
   }
 
+  //load in previously saved property
   getPreviousSubmittedProperty(){
     let prevSavedProperty = this.propertyCacheService.getCurrentProperty('buyVsRent');
     if(prevSavedProperty != undefined){
-      this.rentalProperty  = prevSavedProperty.property;
-      this.initFormFromProperty(this.rentalProperty, prevSavedProperty.customObject);
+      this.property  = prevSavedProperty.property;
+      this.initFormFromProperty(this.property, prevSavedProperty.customObject);
       this.optionsChecked = true;
     }
   }
 
-  clearForm(){
-    this.purchasePrice = undefined;
-    this.downPayment = undefined;
-    this.monthlyGrossRent = undefined;
-    this.interestRate = undefined;
-    this.hoaFees = undefined;
-    this.annualTaxes = undefined;
-    this.annualInsurance = undefined;
-    this.initForm();
-  }
-
-  getClosingCosts(){
-    if(this.purchasePrice != undefined){
-      let tempClosingCosts = Number(this.purchasePrice.replace(/,/g,''))*0.03;
-      if( tempClosingCosts > 5000){
-        this.placeHolderClosingCosts = tempClosingCosts.toString();
-        return tempClosingCosts.toString();
-      } else{
-        this.placeHolderClosingCosts = "5000";
-        return "5,000";
-      }
-    } else{
-      return ;
-    }
-  }
-
-  getAfterRepairedValue(){
-    this.placeHolderARV = this.purchasePrice;
-    return this.purchasePrice;
-  }
-
+  //initialize visualizer options
   initVizOptions(){
-    let costSchedules: Array<any> = this.propertyFinancialsService.getCostSchedules(this.rentalProperty,this.opportunityCost/100);
+    let otherDebt = Number(this.parentForm.controls['otherDebt'].value.replace(/,/g,''));
+    let opportunityCost = Number(this.parentForm.controls['opportunityCost'].value.replace(/,/g,''))/100;
+    //calculate chart data
+    let costSchedules: Array<any> = this.propertyFinancialsService.getCostSchedules(this.property,opportunityCost);
     let crossOverMonth: number = this.propertyFinancialsService.getBuyRentCrossOverMonth(costSchedules);
+    //set up chart max X and Y axis values
     let maxMonthToShow : number = undefined;
     let largerEndColumnName = 'totalRentCost';
     if(crossOverMonth != undefined){
@@ -161,92 +83,37 @@ export class BuyRentCalculatorComponent implements OnInit {
     if(crossOverMonth > 359){
       largerEndColumnName = 'totalBuyCost';
     }
-
+    //create chart options
     this.financialVisualizerOptions = {
-      outputMetrics: ['buyVsRent','monthlyMortgage','affordability','upfrontCost','Equity5'],
-      customMetrics: {
+      outputMetrics: ['buyVsRent','monthlyMortgage','affordability','upfrontCost','Equity5'], //use built in metrics
+      customMetrics: { //add custom metric of affordability
         affordability: {label: 'Minimum Income Required', value: '$'+
           this.propertyFinancialsService.numberWithCommas(
             this.propertyFinancialsService.getMinimumPersonalIncomeRequired(
-              this.rentalProperty, Number(this.otherDebt.replace(/,/g,''))))},
+              this.property, otherDebt))},
         buyVsRent: {label: 'Buying is better if property held', value: crossOverText}
             },
       charts: [
-        {chartXY: {
+        {chartXY: { //add chart of month vs total cost of buy v rent
           xTitle: 'Months', xDataColumnHeader: 'month', yTitle:'Total Cost, $', yDataColumnHeader: largerEndColumnName},
           chartData: costSchedules.slice(0,maxMonthToShow),
           chartSize: {width: 600, height: 300, xMin: 0, xMax: undefined, yMin: 0, yMax: undefined},
           chartTitle: "Buy Vs Rent Cost"},
-        {chartXY: {
+        {chartXY: { //ad chart of month vs equity and inflation adjusted equity
           xTitle: 'Months', xDataColumnHeader: 'month', yTitle:'Equity, $', yDataColumnHeader: 'equity'},
-          chartData: this.propertyFinancialsService.getEquitySchedule(this.rentalProperty),
+          chartData: this.propertyFinancialsService.getEquitySchedule(this.property),
           chartSize: {width: 600, height: 300, xMin: 0, xMax: undefined, yMin: 0, yMax: undefined},
           chartTitle: "Equity Growth Over Time"}]
     };
   }
 
-  customValidation(){
-    let validationPassed = true;
-    if(!this.downPaymentValid()){
-      validationPassed = false;
-      this.errorMessage = "Downpayment must be between 0 and 100%";
-    }
-    return validationPassed;
+  //save this file submission
+  saveSubmission(){
+    let customObjectToSave = {
+      otherDebt: Number(this.parentForm.controls['otherDebt'].value.replace(/,/g,'')),
+      opportunityCost: Number(this.parentForm.controls['opportunityCost'].value.replace(/,/g,''))
+    };
+    this.propertyCacheService.addCurrentProperty(this.property,'buyVsRent',customObjectToSave);
   }
 
-  downPaymentValid(){
-    if(this.downPayment > 100 || this.downPayment < 0 || this.downPayment == undefined){
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  onSubmit(){
-    if(this.customValidation() && this.form.valid){
-      if(!this.inputsCollapsed){
-        if(this.downPayment == 100){
-          this.interestRate = 0;
-        }
-        let actualARV = this.afterRepairedValue;
-        if(actualARV == undefined || actualARV == ""){
-          actualARV = this.placeHolderARV;
-        }
-        let actualClosingCosts = this.closingCosts
-        if(actualClosingCosts == undefined || actualClosingCosts == ""){
-          actualClosingCosts = this.placeHolderClosingCosts.toString();
-        }
-        this.rentalProperty = new SingleFamilyHouseRental(
-          Number(this.purchasePrice.replace(/,/g,'')),
-          this.downPayment/100,
-          Number(actualClosingCosts.replace(/,/g,'')),
-          Number(this.rehabBudget.replace(/,/g,'')),
-          Number(this.monthlyGrossRent.replace(/,/g,'')),
-          this.interestRate/100,
-          Number(this.hoaFees.replace(/,/g,'')),
-          Number(this.annualTaxes.replace(/,/g,'')),
-          Number(this.annualInsurance.replace(/,/g,'')),
-          this.maintenanceRate/100,
-          undefined, //vacancyRate
-          undefined, //managementFees
-          Number(actualARV.replace(/,/g,'')),
-          Number(this.otherMonthlyIncome.replace(/,/g,'')),
-          this.inflation/100,
-          this.appreciation/100,
-          this.rentInflation/100,
-          this.sellingFees/100
-        );
-        this.initVizOptions();
-        let customObjectToSave = {
-          otherDebt: Number(this.otherDebt.replace(/,/g,'')),
-          opportunityCost: this.opportunityCost/100
-        };
-        this.propertyCacheService.addCurrentProperty(this.rentalProperty,'buyVsRent',customObjectToSave);
-      }
-      this.inputsCollapsed = !this.inputsCollapsed;
-      this.invalidSubmit = false;
-    } else {
-      this.invalidSubmit = true;
-    }
-  }
 }

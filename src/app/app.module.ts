@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { RoutingModule } from './modules/routing.module';
 import { AppComponent } from './app.component';
@@ -31,7 +32,8 @@ import { CalcInputComponent } from './components/calc-input/calc-input.component
     RoutingModule,
     FormsModule,
     NgxCleaveDirectiveModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

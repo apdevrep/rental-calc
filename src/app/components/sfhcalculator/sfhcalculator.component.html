@@ -1,174 +1,66 @@
 <div class="container sfhcalculator-container">
   <h1 id="sfh-title">Residential Evaluator</h1>
-  <form #form="ngForm">
+  <form [formGroup]="parentForm">
     <div class = "form-row input-grid collapse show" id="collapseInputs">
       <div class="custom-control custom-checkbox input-options-checkbox form-col-12">
         <input type="checkbox" class="custom-control-input" id="inputOptionCheckbox" name="inputOptionCheckbox"
-          [(ngModel)]="optionsChecked">
+          [(ngModel)]="optionsChecked" [ngModelOptions]="{standalone: true}">
         <label class="custom-control-label" for="inputOptionCheckbox">Show Advanced Options (with default values)</label>
       </div>
       <div class = "form-row">
-        <div class="form col-md-4">
-          <div class = "form-group">
+        <div class="col-md-4">
+          <div>
             <h4>Purchase Information</h4>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="purchasePrice">Purchase Price: </label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="purchasePrice" name="purchasePrice"
-                  [cleave]="{numeral: true}" [(ngModel)]="purchasePrice" [ngClass]="{'invalid-submit': invalidSubmit}" required>
-              </div>
-            </div>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="downPayment">Downpayment:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="downPayment" name="downPayment"
-                   [(ngModel)]="downPayment" min = 1 max = 100 [ngClass]="{'invalid-submit': invalidSubmit}" required>
-                  <span >%</span>
-              </div>
-            </div>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions' [invalidSubmit]='invalidSubmit'
+              [inputName] = "'purchasePrice'" [inputLabel] ="'Purchase Price: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions' [invalidSubmit]='invalidSubmit'
+              [inputName] = "'downPayment'" [inputLabel] ="'Down Payment: '"></app-calc-input>
             <small class = "error-message" [hidden]='!invalidSubmit || downPaymentValid()'><strong>** {{errorMessage}}</strong></small>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="interestRate">Mortgage Interest Rate:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="interestRate" name="interestRate"
-                  [(ngModel)]="interestRate" min = 1 max = 100 [ngClass]="{'invalid-submit': invalidSubmit}" required>
-                  <span >%</span>
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="afterRepairedValue">After Repaired Value:</label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="afterRepairedValue" name="afterRepairedValue"
-                [cleave]="{numeral: true}" [(ngModel)]="afterRepairedValue" placeholder = "{{getAfterRepairedValue()}}">
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="rehabBudget">Rehab Budget:</label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="rehabBudget" name="rehabBudget"
-                [cleave]="{numeral: true}" [(ngModel)]="rehabBudget">
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="closingCosts">Closing Costs: </label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="closingCosts" name="closingCosts"
-                [cleave]="{numeral: true}" [(ngModel)]="closingCosts" placeholder = "{{getClosingCosts()}}">
-              </div>
-            </div>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions' [hidden] = "!optionsChecked"
+              [inputName] = "'closingCosts'" [inputLabel] ="'Closing Costs: '" [defaultText]="'Use Estimate'" ></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions' [invalidSubmit]='invalidSubmit'
+              [inputName] = "'interestRate'" [inputLabel] ="'Interest Rate: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions' [hidden] = "!optionsChecked"
+              [inputName] = "'afterRepairedValue'" [inputLabel] ="'After Repaired Value: '" [defaultText]="'Use Estimate'"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions' [hidden] = "!optionsChecked"
+              [inputName] = "'rehabBudget'" [inputLabel] ="'Rehab Budget: '"></app-calc-input>
           </div>
-          <div class = "form-group" [hidden] = "!optionsChecked" >
-            <h4>Other Information</h4>
-            <div class = "form-inline" >
-              <label class = "text-input-label form-inline" for="inflation">Annual Inflation:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="inflation" name="inflation"
-                  [(ngModel)]="inflation" min = 0 max = 999>
-                <span >%</span>
-              </div>
-            </div>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="appreciation">Annual Appreciation:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="appreciation" name="appreciation"
-                  [(ngModel)]="appreciation" min = 0 max = 999>
-                <span >%</span>
-              </div>
-            </div>
+          <div [hidden] = "!optionsChecked">
+            <h4>Economic Information</h4>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions'
+              [inputName] = "'rentInflation'" [inputLabel] ="'Rent Inflation: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions'
+              [inputName] = "'inflation'" [inputLabel] ="'Inflation: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions'
+              [inputName] = "'appreciation'" [inputLabel] ="'Appreciation: '"></app-calc-input>
           </div>
         </div>
-        <div class="form col-md-4">
-          <div class = "form-group">
+        <div class="col-md-4">
+          <div >
             <h4>Expenses</h4>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="hoaFees">HOA/Condo Fees:</label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="hoaFees" name="hoaFees"
-                  [cleave]="{numeral: true}" [(ngModel)]="hoaFees">
-              </div>
-            </div>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="annualTaxes">Annual Taxes:</label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="annualTaxes" name="annualTaxes"
-                  [cleave]="{numeral: true}" [(ngModel)]="annualTaxes" [ngClass]="{'invalid-submit': invalidSubmit}" required>
-              </div>
-            </div>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="annualInsurance">Annual Insurance Premiums:</label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="annualInsurance" name="annualInsurance"
-                  [cleave]="{numeral: true}" [(ngModel)]="annualInsurance" [ngClass]="{'invalid-submit': invalidSubmit}" required>
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="maintenanceRate">Maintenance Rate (% of Purchase Price):</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="maintenanceRate" name="maintenanceRate"
-                  [(ngModel)]="maintenanceRate" min = 0 max = 999>
-                <span >%</span>
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="vacancyRate">Vacancy Rate:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="vacancyRate" name="vacancyRate"
-                  [(ngModel)]="vacancyRate" min = 0 max = 100>
-                <span >%</span>
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="managementFees">Management Fee Rate:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="managementFees" name="managementFees"
-                  [(ngModel)]="managementFees" min = 0 max = 100>
-                <span >%</span>
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="sellingFees">Selling Fees:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="sellingFees" name="sellingFees"
-                [(ngModel)]="sellingFees" min = 0 max = 100>
-                <span >%</span>
-              </div>
-            </div>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions'
+              [inputName] = "'hoaFees'" [inputLabel] ="'Annual HOA/Condo Fees: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions' [invalidSubmit]='invalidSubmit'
+              [inputName] = "'annualTaxes'" [inputLabel] ="'Annual Taxes: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions' [invalidSubmit]='invalidSubmit'
+              [inputName] = "'annualInsurance'" [inputLabel] ="'Annual Insurance Premiums: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions' [hidden] = "!optionsChecked"
+              [inputName] = "'managementFees'" [inputLabel] ="'Management Fees: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions' [hidden] = "!optionsChecked"
+              [inputName] = "'vacancyRate'" [inputLabel] ="'Vacancy Rate: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions' [hidden] = "!optionsChecked"
+              [inputName] = "'maintenanceRate'" [inputLabel] ="'Maintenance Rate (% of Purchase Price): '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='percentInputOptions' [hidden] = "!optionsChecked"
+              [inputName] = "'sellingFees'" [inputLabel] ="'Selling Fees: '"></app-calc-input>
           </div>
         </div>
         <div class="form col-md-4">
           <div class = "form-group">
-            <h4>Income Information</h4>
-            <div class = "form-inline">
-              <label class = "text-input-label form-inline" for="monthlyGrossRent">Total Expected Monthly Rent:</label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="monthlyGrossRent" name="monthlyGrossRent"
-                [cleave]="{numeral: true}" [(ngModel)]="monthlyGrossRent" [ngClass]="{'invalid-submit': invalidSubmit}" required>
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="otherMonthlyIncome">Other Monthly Income:</label>
-              <div class="input-textbox">
-                <span >$</span>
-                <input type="text" class="form-control sfh-input-box" id="otherMonthlyIncome" name="otherMonthlyIncome"
-                  [cleave]="{numeral: true}" [(ngModel)]="otherMonthlyIncome">
-              </div>
-            </div>
-            <div class = "form-inline" [hidden] = "!optionsChecked">
-              <label class = "text-input-label form-inline" for="rentInflation">Rent Inflation:</label>
-              <div class="input-textbox percent-textbox">
-                <input type="number" class="form-control sfh-input-box input-percent" id="rentInflation" name="rentInflation"
-                [(ngModel)]="rentInflation" min = 0 max = 999>
-                <span >%</span>
-              </div>
-            </div>
+            <h4>Other Information</h4>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions' [invalidSubmit]='invalidSubmit'
+              [inputName] = "'monthlyGrossRent'" [inputLabel] ="'Monthly Rent: '"></app-calc-input>
+            <app-calc-input [parentForm]= parentForm [inputOptions]='currencyInputOptions'
+              [inputName] = "'otherMonthlyIncome'" [inputLabel] ="'Other Monthly Income: '"></app-calc-input>
           </div>
         </div>
       </div>
@@ -194,5 +86,5 @@
       </button>
     </div>
   </form>
-  <app-financials-visualizer #sfhVisualizer [vizOptions] = financialVisualizerOptions *ngIf = "inputsCollapsed" [property]=rentalProperty></app-financials-visualizer>
+  <app-financials-visualizer [vizOptions] = financialVisualizerOptions *ngIf = "inputsCollapsed" [property]=property></app-financials-visualizer>
 </div>

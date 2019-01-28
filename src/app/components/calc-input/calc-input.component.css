@@ -1,0 +1,62 @@
+.text-input-label{
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  width: 10rem;
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.invalid-submit.ng-invalid.calc-input-box{
+  color: #495057;
+  background-color: #fff;
+  border-color: #80ffa7;
+  outline: 1px;
+  box-shadow: 0 0 0 0.1rem rgba(255, 0, 0, 0.75);
+}
+
+.invalid-submit.ng-invalid.calc-input-box:focus{
+  color: #495057;
+  background-color: #fff;
+  border-color: #80ffa7;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem rgba(255, 0, 0, 0.25);
+}
+
+.ng-valid:focus{
+  color: #495057;
+  background-color: #fff;
+  border-color: #80ffa7;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 255, 6, 0.25);
+}
+
+.calc-input-box{
+  width: 10rem;
+  display: inline-block;
+  padding-left: 0.4rem;
+  border: none;
+}
+
+.calc-input-box:active{
+  border: none;
+}
+
+input.input-percent{
+  width: 4.5rem;
+}
+
+.input-textbox span{
+  font-size: 1rem;
+}
+
+.input-textbox{
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+}
+
+.input-textbox.percent-textbox{
+  margin-right: 4.9rem;
+}
